@@ -3,6 +3,10 @@
     "displayName": "Strict Whitespace",
     "description": "",
     "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sidp/vscode-strict-whitespace.git"
+    },
     "publisher": "sidp",
     "engines": {
         "vscode": "^1.12.0"
