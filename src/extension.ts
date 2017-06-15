@@ -18,12 +18,6 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 	);
 
-	const mixedIndentationDecoratorType = vscode.window.createTextEditorDecorationType(
-		Object.assign({}, generalDecoratorType, {
-			overviewRulerLane: vscode.OverviewRulerLane.Left,
-		}),
-	);
-
 	let activeEditor = vscode.window.activeTextEditor;
 	if (activeEditor) {
 		triggerUpdateDecorations();
@@ -64,15 +58,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const trailingWhitespace = updateTrailingWhitespace();
-		const mixedIndentation = updateMixedIndentation();
 
 		activeEditor.setDecorations(
 			trailingWhitespaceDecoratorType,
 			trailingWhitespace,
-		);
-		activeEditor.setDecorations(
-			mixedIndentationDecoratorType,
-			mixedIndentation,
 		);
 	}
 
@@ -94,32 +83,6 @@ export function activate(context: vscode.ExtensionContext) {
 				const decoration = {
 					range: new vscode.Range(startPos, endPos),
 					hoverMessage: 'Unnecessary whitespace',
-				};
-				extraWhitespace.push(decoration);
-			}
-		}
-
-		return extraWhitespace;
-	}
-
-	function updateMixedIndentation(
-		extraWhitespace: vscode.DecorationOptions[] = [],
-	) {
-		const regEx = /^(([ ]+[\t]+)|([\t]+[ ]+))/gm;
-		const text = activeEditor.document.getText();
-
-		let match;
-		while ((match = regEx.exec(text))) {
-			const startIndex: number = match.index;
-			const endIndex: number = match.index + match[1].length;
-			const startPos = activeEditor.document.positionAt(startIndex);
-			const endPos = activeEditor.document.positionAt(endIndex);
-			const cursorFromEnd = activeEditor.selection.active.compareTo(endPos);
-
-			if (startIndex < endIndex && cursorFromEnd !== 0) {
-				const decoration = {
-					range: new vscode.Range(startPos, endPos),
-					hoverMessage: 'Mixed indentation',
 				};
 				extraWhitespace.push(decoration);
 			}
