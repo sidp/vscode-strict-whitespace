@@ -12,12 +12,10 @@ export function activate(context: vscode.ExtensionContext) {
 		borderWidth: '1px',
 	};
 
-	const trailingWhitespaceDecoratorType =
-		vscode.window.createTextEditorDecorationType(
-			Object.assign({}, generalDecoratorType, {
-				overviewRulerLane: vscode.OverviewRulerLane.Right,
-			}),
-		);
+	const whitespaceDecoratorType = vscode.window.createTextEditorDecorationType({
+		...generalDecoratorType,
+		overviewRulerLane: vscode.OverviewRulerLane.Right,
+	});
 
 	let activeEditor = vscode.window.activeTextEditor;
 	if (activeEditor) {
@@ -59,44 +57,91 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		const trailingWhitespace = updateTrailingWhitespace();
-
-		activeEditor.setDecorations(
-			trailingWhitespaceDecoratorType,
-			trailingWhitespace,
-		);
+		const decorators = getWhitespaceDecorators();
+		activeEditor.setDecorations(whitespaceDecoratorType, decorators);
 	}
 
-	function updateTrailingWhitespace() {
-		const extraWhitespace: vscode.DecorationOptions[] = [];
-
+	function getWhitespaceDecorators(): vscode.DecorationOptions[] {
 		if (!activeEditor) {
-			return extraWhitespace;
+			return [];
 		}
 
-		const regEx = /([ \t\f\v]+)$/gm;
-		const text = activeEditor.document.getText();
+		const decorators = [
+			...trailingWhitespace(activeEditor.document),
+			...inconsistentWhitespace(activeEditor.document),
+		];
 
-		let match: RegExpExecArray | null;
-		while ((match = regEx.exec(text))) {
-			const startIndex: number = match.index;
-			const endIndex: number = match.index + match[1].length;
-			const startPos = activeEditor.document.positionAt(startIndex);
-			const endPos = activeEditor.document.positionAt(endIndex);
-			const cursorFromEnd = activeEditor.selection.active.compareTo(endPos);
-
-			if (startIndex < endIndex && cursorFromEnd !== 0) {
-				const decoration = {
-					range: new vscode.Range(startPos, endPos),
-					hoverMessage: 'Unnecessary whitespace',
-				};
-				extraWhitespace.push(decoration);
-			}
-		}
-
-		return extraWhitespace;
+		return decorators.filter(
+			(decorator) =>
+				activeEditor?.selection.active.compareTo(decorator.range.end) !== 0,
+		);
 	}
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+/**
+ * Returns decorators highlighting unnecessary trailing whitespace.
+ *
+ * @param document The document to search in.
+ * @returns Array of decorators.
+ */
+export function trailingWhitespace(
+	document: vscode.TextDocument,
+): vscode.DecorationOptions[] {
+	const regEx = /([ \t\f\v]+)$/gm;
+	return matchRegex(document, regEx, {
+		hoverMessage: 'Unnecessary trailing whitespace',
+	});
+}
+
+/**
+ * Returns decorators highlighting inconsistent whitespace in indentation.
+ *
+ * @param document The document to search in.
+ * @returns Array of decorators.
+ */
+export function inconsistentWhitespace(
+	document: vscode.TextDocument,
+): vscode.DecorationOptions[] {
+	const regEx = /^(\t* +\t+)/gm;
+	return matchRegex(document, regEx, {
+		hoverMessage: 'Inconsistent indentation',
+	});
+}
+
+/**
+ * Get decorators from a regular expression
+ *
+ * @param document The document to search in.
+ * @param regEx The regular expression to apply.
+ * @param addtionalOptions Any additional DecoratorOptions to insert in the returned decorators.
+ * @returns Array of decorators.
+ */
+function matchRegex(
+	document: vscode.TextDocument,
+	regEx: RegExp,
+	addtionalOptions: Partial<vscode.DecorationOptions>,
+): vscode.DecorationOptions[] {
+	const text = document.getText();
+
+	const decorators: vscode.DecorationOptions[] = [];
+	let match: RegExpExecArray | null;
+
+	while ((match = regEx.exec(text))) {
+		const startIndex: number = match.index;
+		const endIndex: number = match.index + match[1].length;
+		const startPos = document.positionAt(startIndex);
+		const endPos = document.positionAt(endIndex);
+
+		if (startIndex < endIndex) {
+			decorators.push({
+				...addtionalOptions,
+				range: new vscode.Range(startPos, endPos),
+			});
+		}
+	}
+
+	return decorators;
+}
