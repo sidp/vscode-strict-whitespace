@@ -12,11 +12,12 @@ export function activate(context: vscode.ExtensionContext) {
 		borderWidth: '1px',
 	};
 
-	const trailingWhitespaceDecoratorType = vscode.window.createTextEditorDecorationType(
-		Object.assign({}, generalDecoratorType, {
-			overviewRulerLane: vscode.OverviewRulerLane.Right,
-		}),
-	);
+	const trailingWhitespaceDecoratorType =
+		vscode.window.createTextEditorDecorationType(
+			Object.assign({}, generalDecoratorType, {
+				overviewRulerLane: vscode.OverviewRulerLane.Right,
+			}),
+		);
 
 	let activeEditor = vscode.window.activeTextEditor;
 	if (activeEditor) {
@@ -24,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	vscode.window.onDidChangeActiveTextEditor(
-		editor => {
+		(editor) => {
 			activeEditor = editor;
 			if (editor) {
 				triggerUpdateDecorations();
@@ -35,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	vscode.workspace.onDidChangeTextDocument(
-		event => {
+		(event) => {
 			if (activeEditor && event.document === activeEditor.document) {
 				triggerUpdateDecorations();
 			}
@@ -44,10 +45,11 @@ export function activate(context: vscode.ExtensionContext) {
 		context.subscriptions,
 	);
 
-	var timeout = null;
+	var timeout: NodeJS.Timeout | undefined;
 	function triggerUpdateDecorations() {
 		if (timeout) {
 			clearTimeout(timeout);
+			timeout = undefined;
 		}
 		timeout = setTimeout(updateDecorations, 250);
 	}
@@ -65,13 +67,17 @@ export function activate(context: vscode.ExtensionContext) {
 		);
 	}
 
-	function updateTrailingWhitespace(
-		extraWhitespace: vscode.DecorationOptions[] = [],
-	) {
+	function updateTrailingWhitespace() {
+		const extraWhitespace: vscode.DecorationOptions[] = [];
+
+		if (!activeEditor) {
+			return extraWhitespace;
+		}
+
 		const regEx = /([ \t\f\v]+)$/gm;
 		const text = activeEditor.document.getText();
 
-		let match;
+		let match: RegExpExecArray | null;
 		while ((match = regEx.exec(text))) {
 			const startIndex: number = match.index;
 			const endIndex: number = match.index + match[1].length;
