@@ -10,6 +10,10 @@ This is the initial release of this extension. It currently highlights unnecessa
 
 ## Release Notes
 
+### 0.0.2
+
+Fixed image display in Marketplace.
+
 ### 0.0.1
 
 Initial release.
