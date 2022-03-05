@@ -17,6 +17,23 @@
     "activationEvents": [
         "onStartupFinished"
     ],
+    "contributes": {
+        "configuration": {
+            "title": "Strict Whitespace",
+            "properties": {
+                "strictWhitespace.disableMixedIndentation": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable the warnings for mixed indentation."
+                },
+                "strictWhitespace.disableTrailingWhitespace": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable the warnings for trailing whitespace."
+                }
+            }
+        }
+    },
     "main": "./out/extension.js",
     "scripts": {
         "vscode:prepublish": "npm run compile",
