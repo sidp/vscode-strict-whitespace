@@ -2,11 +2,29 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
+	let showHighlights = true;
 	let configuration = vscode.workspace.getConfiguration('strictWhitespace');
 
 	vscode.workspace.onDidChangeConfiguration(() => {
 		configuration = vscode.workspace.getConfiguration('strictWhitespace');
 		triggerUpdateDecorations();
+	});
+
+	let toggleInfoMessage: vscode.Disposable;
+	vscode.commands.registerCommand('strictWhitespace.toggleHighlights', () => {
+		showHighlights = !showHighlights;
+		triggerUpdateDecorations();
+
+		if (toggleInfoMessage) {
+			toggleInfoMessage.dispose();
+		}
+
+		toggleInfoMessage = vscode.window.setStatusBarMessage(
+			`${
+				showHighlights ? '$(eye) Showing' : '$(eye-closed) Hiding'
+			} whitespace highlights`,
+			2000,
+		);
 	});
 
 	const generalDecoratorType: vscode.DecorationRenderOptions = {
@@ -69,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	function getWhitespaceDecorators(): vscode.DecorationOptions[] {
-		if (!activeEditor) {
+		if (!activeEditor || showHighlights === false) {
 			return [];
 		}
 
