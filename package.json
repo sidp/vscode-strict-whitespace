@@ -1,8 +1,8 @@
 {
     "name": "strict-whitespace",
     "displayName": "Strict Whitespace",
-    "description": "",
-    "version": "0.0.2",
+    "description": "Discover poor whitespace in documents.",
+    "version": "0.1.0-alpha1",
     "repository": {
         "type": "git",
         "url": "https://github.com/sidp/vscode-strict-whitespace.git"
@@ -17,6 +17,7 @@
     "activationEvents": [
         "onStartupFinished"
     ],
+    "icon": "images/icon.png",
     "main": "./out/extension.js",
     "scripts": {
         "vscode:prepublish": "npm run compile",
