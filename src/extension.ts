@@ -2,6 +2,31 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
+	let showHighlights = true;
+	let configuration = vscode.workspace.getConfiguration('strictWhitespace');
+
+	vscode.workspace.onDidChangeConfiguration(() => {
+		configuration = vscode.workspace.getConfiguration('strictWhitespace');
+		triggerUpdateDecorations();
+	});
+
+	let toggleInfoMessage: vscode.Disposable;
+	vscode.commands.registerCommand('strictWhitespace.toggleHighlights', () => {
+		showHighlights = !showHighlights;
+		triggerUpdateDecorations();
+
+		if (toggleInfoMessage) {
+			toggleInfoMessage.dispose();
+		}
+
+		toggleInfoMessage = vscode.window.setStatusBarMessage(
+			`${
+				showHighlights ? '$(eye) Showing' : '$(eye-closed) Hiding'
+			} whitespace highlights`,
+			2000,
+		);
+	});
+
 	const generalDecoratorType: vscode.DecorationRenderOptions = {
 		overviewRulerColor: 'rgba(255, 0, 0, 0.4)',
 		backgroundColor: 'rgba(255, 0, 0, 0.25)',
@@ -62,14 +87,22 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	function getWhitespaceDecorators(): vscode.DecorationOptions[] {
-		if (!activeEditor) {
+		if (!activeEditor || showHighlights === false) {
 			return [];
 		}
 
-		const decorators = [
-			...trailingWhitespace(activeEditor.document),
-			...inconsistentWhitespace(activeEditor.document),
-		];
+		let decorators: vscode.DecorationOptions[] = [];
+
+		if (configuration.get('disableMixedIndentation') === false) {
+			decorators = [...decorators, ...mixedIndentation(activeEditor.document)];
+		}
+
+		if (configuration.get('disableTrailingWhitespace') === false) {
+			decorators = [
+				...decorators,
+				...trailingWhitespace(activeEditor.document),
+			];
+		}
 
 		return decorators.filter(
 			(decorator) =>
@@ -102,7 +135,7 @@ export function trailingWhitespace(
  * @param document The document to search in.
  * @returns Array of decorators.
  */
-export function inconsistentWhitespace(
+export function mixedIndentation(
 	document: vscode.TextDocument,
 ): vscode.DecorationOptions[] {
 	const regEx = /^(\t* +\t+)/gm;

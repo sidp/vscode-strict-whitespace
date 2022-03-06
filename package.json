@@ -18,6 +18,35 @@
         "onStartupFinished"
     ],
     "icon": "images/icon.png",
+    "contributes": {
+        "configuration": {
+            "title": "Strict Whitespace",
+            "properties": {
+                "strictWhitespace.disableMixedIndentation": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable the highlights for mixed indentation."
+                },
+                "strictWhitespace.disableTrailingWhitespace": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable the highlights for trailing whitespace."
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "strictWhitespace.toggleHighlights",
+                "title": "Toggle highlights on/off"
+            }
+        ],
+        "keybindings":[
+            {
+                "command": "strictWhitespace.toggleHighlights",
+                "key": ""
+            }
+        ]
+    },
     "main": "./out/extension.js",
     "scripts": {
         "vscode:prepublish": "npm run compile",
