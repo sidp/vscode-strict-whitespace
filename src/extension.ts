@@ -1,5 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
+import { setTimeout, clearTimeout } from 'timers';
 
 export function activate(context: vscode.ExtensionContext) {
 	let showHighlights = true;
@@ -88,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
 		context.subscriptions,
 	);
 
-	var timeout: NodeJS.Timeout | undefined;
+	var timeout: ReturnType<typeof setTimeout> | undefined;
 	function triggerUpdateDecorations() {
 		if (timeout) {
 			clearTimeout(timeout);

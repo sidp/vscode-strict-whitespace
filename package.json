@@ -1,78 +1,76 @@
 {
-    "name": "strict-whitespace",
-    "displayName": "Strict Whitespace",
-    "description": "Discover poor whitespace in documents.",
-    "version": "0.1.0",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/sidp/vscode-strict-whitespace.git"
-    },
-    "publisher": "sidp",
-    "engines": {
-        "vscode": "^1.64.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onStartupFinished"
-    ],
-    "icon": "images/icon.png",
-    "contributes": {
-        "configuration": {
-            "title": "Strict Whitespace",
-            "properties": {
-                "strictWhitespace.disableMixedIndentation": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Disable the highlights for mixed indentation."
-                },
-                "strictWhitespace.disableTrailingWhitespace": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Disable the highlights for trailing whitespace."
-                },
-                "strictWhitespace.renderWhitespace": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Render whitespace inside highlights."
-                }
-            }
-        },
-        "commands": [
-            {
-                "command": "strictWhitespace.toggleHighlights",
-                "title": "Toggle highlights on/off"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "strictWhitespace.toggleHighlights",
-                "key": ""
-            }
-        ]
-    },
-    "main": "./out/extension.js",
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "pretest": "npm run compile && npm run lint",
-        "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
-    },
-    "devDependencies": {
-        "@types/glob": "^7.2.0",
-        "@types/mocha": "^9.1.0",
-        "@types/node": "14.x",
-        "@types/vscode": "^1.64.0",
-        "@typescript-eslint/eslint-plugin": "^5.12.1",
-        "@typescript-eslint/parser": "^5.12.1",
-        "@vscode/test-electron": "^2.1.2",
-        "eslint": "^8.9.0",
-        "glob": "^7.2.0",
-        "mocha": "^9.2.1",
-        "prettier": "^2.5.1",
-        "typescript": "^4.5.5"
-    }
+	"name": "strict-whitespace",
+	"displayName": "Strict Whitespace",
+	"description": "Discover poor whitespace in documents.",
+	"version": "0.1.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sidp/vscode-strict-whitespace.git"
+	},
+	"publisher": "sidp",
+	"engines": {
+		"vscode": "^1.64.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"icon": "images/icon.png",
+	"contributes": {
+		"configuration": {
+			"title": "Strict Whitespace",
+			"properties": {
+				"strictWhitespace.disableMixedIndentation": {
+					"type": "boolean",
+					"default": false,
+					"description": "Disable the highlights for mixed indentation."
+				},
+				"strictWhitespace.disableTrailingWhitespace": {
+					"type": "boolean",
+					"default": false,
+					"description": "Disable the highlights for trailing whitespace."
+				},
+				"strictWhitespace.renderWhitespace": {
+					"type": "boolean",
+					"default": false,
+					"description": "Render whitespace inside highlights."
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "strictWhitespace.toggleHighlights",
+				"title": "Toggle highlights on/off"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "strictWhitespace.toggleHighlights",
+				"key": ""
+			}
+		]
+	},
+	"main": "./out/extension.js",
+	"scripts": {
+		"vscode:prepublish": "pnpm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "pnpm run compile && pnpm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.97.0",
+		"@types/mocha": "^10.0.6",
+		"@types/node": "18.x",
+		"@typescript-eslint/eslint-plugin": "^6.19.1",
+		"@typescript-eslint/parser": "^6.19.1",
+		"eslint": "^8.56.0",
+		"typescript": "^5.3.3",
+		"@vscode/test-cli": "^0.0.4",
+		"@vscode/test-electron": "^2.3.9"
+	},
+	"packageManager": "pnpm@8.10.5+sha1.4370a069f21873a0ad83c785b8048ed8caf6e6e9"
 }
