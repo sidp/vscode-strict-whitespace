@@ -31,13 +31,15 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	const generalDecoratorType: vscode.DecorationRenderOptions = {
-		overviewRulerColor: 'rgba(255, 0, 0, 0.4)',
-		backgroundColor: 'rgba(255, 0, 0, 0.25)',
+		overviewRulerColor: configuration.get(
+			'colorCustomizations.overviewRulerColor',
+			'#ff323266',
+		),
+		backgroundColor: configuration.get(
+			'colorCustomizations.highlightBackgroundColor',
+			'#ff323233',
+		),
 		borderRadius: '1px',
-		borderColor: 'rgba(255, 0, 0, 0.0)',
-		borderStyle: 'solid',
-		borderSpacing: '2px',
-		borderWidth: '1px',
 	};
 
 	const whitespaceDecoratorType = vscode.window.createTextEditorDecorationType({
