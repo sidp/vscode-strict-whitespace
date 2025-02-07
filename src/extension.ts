@@ -4,9 +4,11 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
 	let showHighlights = true;
 	let configuration = vscode.workspace.getConfiguration('strictWhitespace');
+	let editorConfig = vscode.workspace.getConfiguration('editor');
 
 	vscode.workspace.onDidChangeConfiguration(() => {
 		configuration = vscode.workspace.getConfiguration('strictWhitespace');
+		editorConfig = vscode.workspace.getConfiguration('editor');
 		triggerUpdateDecorations();
 	});
 
@@ -40,6 +42,24 @@ export function activate(context: vscode.ExtensionContext) {
 	const whitespaceDecoratorType = vscode.window.createTextEditorDecorationType({
 		...generalDecoratorType,
 		overviewRulerLane: vscode.OverviewRulerLane.Right,
+	});
+
+	const spacesDecoratorType = vscode.window.createTextEditorDecorationType({
+		before: {
+			color: new vscode.ThemeColor('editorWhitespace.foreground'),
+			width: '0px',
+			contentText: String.fromCharCode(0xb7),
+			fontStyle: 'bold',
+		},
+	});
+
+	const tabsDecoratorType = vscode.window.createTextEditorDecorationType({
+		before: {
+			color: new vscode.ThemeColor('editorWhitespace.foreground'),
+			width: '0px',
+			contentText: String.fromCharCode(0x2192),
+			fontStyle: 'bold',
+		},
 	});
 
 	let activeEditor = vscode.window.activeTextEditor;
@@ -84,6 +104,18 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const decorators = getWhitespaceDecorators();
 		activeEditor.setDecorations(whitespaceDecoratorType, decorators);
+
+		const renderWhitespace =
+			configuration.get('renderWhitespace') === true &&
+			editorConfig.get('renderWhitespace') !== 'all';
+
+		if (renderWhitespace) {
+			const spaceCharacters = getSpacesDecorators(decorators);
+			activeEditor.setDecorations(spacesDecoratorType, spaceCharacters);
+
+			const tabCharacters = getTabsDecorators(decorators);
+			activeEditor.setDecorations(tabsDecoratorType, tabCharacters);
+		}
 	}
 
 	function getWhitespaceDecorators(): vscode.DecorationOptions[] {
@@ -108,6 +140,46 @@ export function activate(context: vscode.ExtensionContext) {
 			(decorator) =>
 				activeEditor?.selection.active.compareTo(decorator.range.end) !== 0,
 		);
+	}
+
+	function getDecoratorsForCharacter(
+		char: string,
+		decorators: vscode.DecorationOptions[],
+	): vscode.DecorationOptions[] {
+		return decorators.flatMap((decorator) => {
+			const decorators: vscode.DecorationOptions[] = [];
+
+			for (
+				let i = decorator.range.start.character;
+				i < decorator.range.end.character;
+				i++
+			) {
+				if (
+					activeEditor?.document.lineAt(decorator.range.start.line).text[i] ===
+					char
+				) {
+					const startPos = new vscode.Position(decorator.range.start.line, i);
+					const endPos = new vscode.Position(decorator.range.start.line, i + 1);
+					decorators.push({
+						range: new vscode.Range(startPos, endPos),
+					});
+				}
+			}
+
+			return decorators;
+		});
+	}
+
+	function getSpacesDecorators(
+		decorators: vscode.DecorationOptions[],
+	): vscode.DecorationOptions[] {
+		return getDecoratorsForCharacter('\u0020', decorators);
+	}
+
+	function getTabsDecorators(
+		decorators: vscode.DecorationOptions[],
+	): vscode.DecorationOptions[] {
+		return getDecoratorsForCharacter('\u0009', decorators);
 	}
 }
 
