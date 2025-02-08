@@ -4,7 +4,7 @@ This extension highlights poor whitespace in documents, letting you quickly disc
 
 ## Features
 
-- Highlights inconsistent whitespace in indentation
+- Highlights mixed whitespace in indentation
 - Highlights unnecessary trailing whitespace
 - Render whitespace in highlighted ranges (enabled with the `strictWhitespace.renderWhitespace` setting)
 

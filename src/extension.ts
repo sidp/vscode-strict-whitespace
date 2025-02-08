@@ -202,12 +202,12 @@ export function trailingWhitespace(
 ): vscode.DecorationOptions[] {
 	const regEx = /([ \t\f\v]+)$/gm;
 	return matchRegex(document, regEx, {
-		hoverMessage: 'Unnecessary trailing whitespace',
+		hoverMessage: 'Unnecessary trailing whitespace.',
 	});
 }
 
 /**
- * Returns decorators highlighting inconsistent whitespace in indentation.
+ * Returns decorators highlighting mixed whitespace in indentation.
  *
  * @param document The document to search in.
  * @returns Array of decorators.
@@ -217,7 +217,7 @@ export function mixedIndentation(
 ): vscode.DecorationOptions[] {
 	const regEx = /^(\t* +\t+)/gm;
 	return matchRegex(document, regEx, {
-		hoverMessage: 'Inconsistent indentation',
+		hoverMessage: 'Mixed indentation.',
 	});
 }
 
