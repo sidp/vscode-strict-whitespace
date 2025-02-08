@@ -15,8 +15,9 @@ This extension highlights poor whitespace in documents, letting you quickly disc
 - `strictWhitespace.disableMixedIndentation`: Disable the highlights for mixed indentation.
 - `strictWhitespace.disableTrailingWhitespace`: Disable the highlights for trailing whitespace.
 - `strictWhitespace.renderWhitespace`: Render whitespace inside highlights.
-- `strictWhitespace.colorCustomizations.highlightBackgroundColor`: Background color of the highlights.
-- `strictWhitespace.colorCustomizations.overviewRulerColor`: Overview ruler color for the highlights.
+- `strictWhitespace.colorCustomizations.highlight.background`: Background color of the highlights.
+- `strictWhitespace.colorCustomizations.whitespace.foreground`: Color of rendered whitespace inside highlights.
+- `strictWhitespace.colorCustomizations.overviewRuler.foreground`: Overview ruler color for the highlights.
 
 ## Known Issues
 

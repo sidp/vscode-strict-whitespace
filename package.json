@@ -37,13 +37,18 @@
 					"default": false,
 					"description": "Render whitespace inside highlights."
 				},
-				"strictWhitespace.colorCustomizations.highlightBackgroundColor": {
+				"strictWhitespace.colorCustomizations.highlight.background": {
 					"type": "string",
 					"format": "color",
 					"default": "#ff323233",
 					"description": "Background color of the highlights."
 				},
-				"strictWhitespace.colorCustomizations.overviewRulerColor": {
+				"strictWhitespace.colorCustomizations.whitespace.foreground": {
+					"type": "string",
+					"format": "color",
+					"description": "Color of rendered whitespace inside highlights."
+				},
+				"strictWhitespace.colorCustomizations.overviewRuler.foreground": {
 					"type": "string",
 					"format": "color",
 					"default": "#ff323266",
