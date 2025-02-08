@@ -71,10 +71,10 @@
 	},
 	"main": "./out/extension.js",
 	"scripts": {
-		"vscode:prepublish": "pnpm run compile",
+		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"pretest": "pnpm run compile && pnpm run lint",
+		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "vscode-test"
 	},
@@ -88,6 +88,5 @@
 		"typescript": "^5.3.3",
 		"@vscode/test-cli": "^0.0.4",
 		"@vscode/test-electron": "^2.3.9"
-	},
-	"packageManager": "pnpm@8.10.5+sha1.4370a069f21873a0ad83c785b8048ed8caf6e6e9"
+	}
 }
