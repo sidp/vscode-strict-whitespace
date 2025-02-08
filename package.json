@@ -9,7 +9,7 @@
 	},
 	"publisher": "sidp",
 	"engines": {
-		"vscode": "^1.64.0"
+		"vscode": "^1.97.0"
 	},
 	"categories": [
 		"Other"
