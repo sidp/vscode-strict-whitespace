@@ -5,11 +5,10 @@ import { setTimeout, clearTimeout } from 'timers';
 export function activate(context: vscode.ExtensionContext) {
 	let showHighlights = true;
 	let configuration = vscode.workspace.getConfiguration('strictWhitespace');
-	let editorConfig = vscode.workspace.getConfiguration('editor');
 
 	vscode.workspace.onDidChangeConfiguration(() => {
 		configuration = vscode.workspace.getConfiguration('strictWhitespace');
-		editorConfig = vscode.workspace.getConfiguration('editor');
+		updateDecoratorTypes();
 		triggerUpdateDecorations();
 	});
 
@@ -30,42 +29,50 @@ export function activate(context: vscode.ExtensionContext) {
 		);
 	});
 
-	const whitespaceDecoratorType = vscode.window.createTextEditorDecorationType({
-		overviewRulerColor: configuration.get(
-			'colorCustomizations.overviewRuler.foreground',
-			'#ff323266',
-		),
-		backgroundColor: configuration.get(
-			'colorCustomizations.highlight.background',
-			'#ff323233',
-		),
-		borderRadius: '1px',
-		overviewRulerLane: vscode.OverviewRulerLane.Right,
-	});
+	let whitespaceDecoratorType: vscode.TextEditorDecorationType;
+	let spacesDecoratorType: vscode.TextEditorDecorationType;
+	let tabsDecoratorType: vscode.TextEditorDecorationType;
 
-	const spacesDecoratorType = vscode.window.createTextEditorDecorationType({
-		before: {
-			color: configuration.get(
-				'colorCustomizations.whitespace.foreground',
-				new vscode.ThemeColor('editorWhitespace.foreground'),
+	const updateDecoratorTypes = () => {
+		whitespaceDecoratorType = vscode.window.createTextEditorDecorationType({
+			overviewRulerColor: configuration.get(
+				'colorCustomizations.overviewRuler.foreground',
+				'#ff323266',
 			),
-			width: '0px',
-			contentText: String.fromCharCode(0xb7),
-			fontStyle: 'bold',
-		},
-	});
+			backgroundColor: configuration.get(
+				'colorCustomizations.highlight.background',
+				'#ff323233',
+			),
+			borderRadius: '1px',
+			overviewRulerLane: vscode.OverviewRulerLane.Right,
+		});
 
-	const tabsDecoratorType = vscode.window.createTextEditorDecorationType({
-		before: {
-			color: configuration.get(
-				'colorCustomizations.whitespace.foreground',
-				new vscode.ThemeColor('editorWhitespace.foreground'),
-			),
-			width: '0px',
-			contentText: String.fromCharCode(0x2192),
-			fontStyle: 'bold',
-		},
-	});
+		spacesDecoratorType = vscode.window.createTextEditorDecorationType({
+			before: {
+				color: configuration.get(
+					'colorCustomizations.whitespace.foreground',
+					new vscode.ThemeColor('editorWhitespace.foreground'),
+				),
+				width: '0px',
+				contentText: String.fromCharCode(0xb7),
+				fontStyle: 'bold',
+			},
+		});
+
+		tabsDecoratorType = vscode.window.createTextEditorDecorationType({
+			before: {
+				color: configuration.get(
+					'colorCustomizations.whitespace.foreground',
+					new vscode.ThemeColor('editorWhitespace.foreground'),
+				),
+				width: '0px',
+				contentText: String.fromCharCode(0x2192),
+				fontStyle: 'bold',
+			},
+		});
+	};
+
+	updateDecoratorTypes();
 
 	let activeEditor = vscode.window.activeTextEditor;
 	if (activeEditor) {
@@ -110,9 +117,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const decorators = getWhitespaceDecorators();
 		activeEditor.setDecorations(whitespaceDecoratorType, decorators);
 
-		const renderWhitespace =
-			configuration.get('renderWhitespace') === true &&
-			editorConfig.get('renderWhitespace') !== 'all';
+		const renderWhitespace = configuration.get('renderWhitespace') === true;
 
 		if (renderWhitespace) {
 			const spaceCharacters = getSpacesDecorators(decorators);
