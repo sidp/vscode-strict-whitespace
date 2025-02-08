@@ -1,11 +1,11 @@
-# strict-whitespace
+# Strict Whitespace
 
-This extension highlights poor whitespace in documents.
+This extension highlights poor whitespace in documents, letting you quickly discover unnecessary trailing whitespace and indentation that mixes tabs and spaces on the same lines.
 
 ## Features
 
-Highlights
-- Unnecessary trailing whitespace
-- Inconsistent whitespace in indentation
+- Highlights inconsistent whitespace in indentation
+- Highlights unnecessary trailing whitespace
+- Render whitespace in highlighted ranges (enabled with the `strictWhitespace.renderWhitespace` setting)
 
-![Highlighted trailing whitespace](images/screenshot.png)
+<img src="images/screenshot.png" alt="Highlighted trailing whitespace and mixed indentation" width="608" height="155">
